@@ -1,0 +1,10 @@
+import Link from "next/link";
+import { ArrowRight, BookOpen, Bot, GraduationCap } from "lucide-react";
+
+const guides = [{ title: "Build your first course", text: "Start with a topic and let the course builder create a structured learning path.", href: "/create-course", icon: GraduationCap }, { title: "Study a lesson", text: "Read lesson content, ask the tutor questions, and mark your progress as you go.", href: "/courses", icon: BookOpen }, { title: "Use AI tools", text: "Generate quizzes and use the lesson-aware tutor to deepen your understanding.", href: "/ai-tutor", icon: Bot }];
+
+export default function DocumentationPage() {
+  return (
+    <div className="mx-auto max-w-5xl space-y-8"><div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-purple-600">CourseForge guide</p><h1 className="mt-2 text-4xl font-bold">Learn the workflow</h1><p className="mt-2 max-w-2xl text-gray-500">A short guide to creating courses, learning from them, and tracking the work you complete.</p></div><div className="grid gap-5 md:grid-cols-3">{guides.map(({ title, text, href, icon: Icon }) => <Link key={title} href={href} className="group rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 transition hover:-translate-y-1 hover:ring-purple-300"><Icon className="text-purple-600" size={26} /><h2 className="mt-6 text-lg font-semibold">{title}</h2><p className="mt-2 text-sm leading-6 text-gray-500">{text}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-purple-700">Open area <ArrowRight size={15} className="transition group-hover:translate-x-1" /></span></Link>)}</div><section className="rounded-2xl bg-purple-50 p-6"><h2 className="text-xl font-semibold text-purple-950">A useful mental model</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-purple-900/75">Courses are your workspace, lessons are the learning units, progress records what you finish, and certificates are issued only after the full course is complete.</p></section></div>
+  );
+}
