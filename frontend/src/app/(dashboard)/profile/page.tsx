@@ -13,9 +13,7 @@ import {
   KeyRound,
   LogOut,
   Mail,
-  Moon,
   ShieldCheck,
-  Sun,
   Trash2,
   User,
   X,
@@ -47,7 +45,6 @@ export default function ProfilePage() {
   const [avatar, setAvatar] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -420,13 +417,6 @@ async function handleChangePassword() {
             onToggle={() => setNotifications((value) => !value)}
           />
 
-          <PreferenceRow
-            icon={darkMode ? <Moon size={20} /> : <Sun size={20} />}
-            title="Dark Mode"
-            description="Switch between light and dark appearance."
-            enabled={darkMode}
-            onToggle={() => setDarkMode((value) => !value)}
-          />
         </div>
       </section>
 

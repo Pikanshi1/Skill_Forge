@@ -1,21 +1,13 @@
-import { Resend } from "resend";
-import env from "../../config/env.js";
-
-const resend = new Resend(env.RESEND_API_KEY);
+import sendEmail from "../../utils/sendEmail.js";
 
 export const sendResetPasswordEmail = async (
 	email: string,
 	resetLink: string,
 ) => {
-	try {
-		await resend.emails.send({
-			from: "AI Course Builder <onboarding@resend.dev>",
-
-			to: email,
-
-			subject: "Reset your AI Course Builder password",
-
-			html: `
+	await sendEmail({
+		to: email,
+		subject: "Reset your AI Course Builder password",
+		html: `
         <div style="font-family: Arial">
 
           <h2>
@@ -51,10 +43,5 @@ export const sendResetPasswordEmail = async (
 
         </div>
       `,
-		});
-	} catch (error) {
-		void error;
-
-		throw error;
-	}
+	});
 };

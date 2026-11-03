@@ -1,6 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const dashboardPath = /^\/(admin|ai-tutor|analytics|certificate|certificates|course|courses|create-course|dashboard|documentation|lessons|profile|quiz|settings|support)(\/|$)/;
+
+  if (dashboardPath.test(pathname)) return null;
+
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
       <nav className="w-full flex items-center px-6 md:px-10 lg:px-16 xl:px-20 py-4">
@@ -56,6 +65,7 @@ export default function Navbar() {
         {/* Right Buttons */}
 
         <div className="flex items-center gap-5 ml-auto">
+          <ThemeToggle />
 
           <Link
             href="/login"

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, Bot, GraduationCap } from "lucide-react";
 
-const guides = [{ title: "Build your first course", text: "Start with a topic and let the course builder create a structured learning path.", href: "/create-course", icon: GraduationCap }, { title: "Study a lesson", text: "Read lesson content, ask the tutor questions, and mark your progress as you go.", href: "/courses", icon: BookOpen }, { title: "Use AI tools", text: "Generate quizzes and use the lesson-aware tutor to deepen your understanding.", href: "/ai-tutor", icon: Bot }];
+const guides = [{ title: "Build your first course", text: "Start with a topic and let the course builder create a structured learning path.", href: "/create-course", icon: GraduationCap }, { title: "Study a lesson", text: "Read lesson content, ask the tutor questions, and mark your progress as you go.", href: "/courses", icon: BookOpen }, { title: "Learn with AI Tutor", text: "Ask follow-up questions, debug code, and deepen your understanding with one persistent tutor.", href: "/ai-tutor", icon: Bot }];
 
 export default function DocumentationPage() {
   return (

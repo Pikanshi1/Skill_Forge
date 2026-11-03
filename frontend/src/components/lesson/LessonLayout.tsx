@@ -22,6 +22,8 @@ type Props = {
   modules?: Module[];
   completed?: boolean;
   onComplete?: () => void;
+  onGenerate?: () => void;
+  generating?: boolean;
 };
 
 export default function LessonLayout({
@@ -36,6 +38,8 @@ export default function LessonLayout({
   modules,
   completed = false,
   onComplete,
+  onGenerate,
+  generating,
 }: Props) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -61,6 +65,8 @@ export default function LessonLayout({
               videoUrl={videoUrl}
               completed={completed}
               onComplete={onComplete}
+              onGenerate={onGenerate}
+              generating={generating}
             />
           </div>
 

@@ -13,7 +13,8 @@ const envSchema = z.object({
 
 	GROQ_MODEL: z.string(),
 	FRONTEND_URL: z.string().url(),
-	RESEND_API_KEY: z.string().min(1),
+	EMAIL_USER: z.string().email(),
+	EMAIL_PASSWORD: z.string().min(1),
 });
 
 const env = envSchema.parse(process.env);

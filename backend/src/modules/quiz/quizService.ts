@@ -14,10 +14,31 @@ type GeneratedQuestion = {
 };
 type GeneratedQuiz = { questions: GeneratedQuestion[] };
 
-export const generateQuiz = async (lessonId: string) => {
+const isValidGeneratedQuiz = (value: unknown): value is GeneratedQuiz => {
+	if (!value || typeof value !== "object") return false;
+	const quiz = value as GeneratedQuiz;
+
+	return Boolean(
+		Array.isArray(quiz.questions) &&
+			quiz.questions.length > 0 &&
+			quiz.questions.every(
+				(question) =>
+					typeof question.question === "string" &&
+					Array.isArray(question.options) &&
+					question.options.length === 4 &&
+					question.options.every((option) => typeof option === "string") &&
+					typeof question.answer === "string" &&
+					question.options.includes(question.answer) &&
+					typeof question.explanation === "string",
+			),
+	);
+};
+
+export const generateQuiz = async (lessonId: string, userId: string) => {
 	const lesson = await prisma.lesson.findUnique({
 		where: {
 			id: lessonId,
+			module: { course: { userId } },
 		},
 		include: {
 			module: {
@@ -35,12 +56,6 @@ export const generateQuiz = async (lessonId: string) => {
 	if (!lesson.content) {
 		throw new AppError("Generate lesson content first.", 400);
 	}
-
-	await prisma.quiz.deleteMany({
-		where: {
-			lessonId,
-		},
-	});
 
 	const prompt = buildQuizPrompt(
 		lesson.module.course.title,
@@ -61,15 +76,21 @@ export const generateQuiz = async (lessonId: string) => {
 	const text = response.choices[0]?.message?.content ?? "";
 
 	const parsed = parseJsonResponse<GeneratedQuiz>(text);
+	if (!isValidGeneratedQuiz(parsed)) {
+		throw new AppError("AI returned an invalid quiz", 502);
+	}
 
-	await prisma.quiz.createMany({
-		data: parsed.questions.map((q) => ({
-			question: q.question,
-			options: q.options,
-			answer: q.answer,
-			explanation: q.explanation,
-			lessonId,
-		})),
+	await prisma.$transaction(async (tx) => {
+		await tx.quiz.deleteMany({ where: { lessonId } });
+		await tx.quiz.createMany({
+			data: parsed.questions.map((q) => ({
+				question: q.question,
+				options: q.options,
+				answer: q.answer,
+				explanation: q.explanation,
+				lessonId,
+			})),
+		});
 	});
 
 	return prisma.quiz.findMany({
@@ -84,10 +105,11 @@ export const generateQuiz = async (lessonId: string) => {
 	});
 };
 
-export const getQuiz = async (lessonId: string) => {
+export const getQuiz = async (lessonId: string, userId: string) => {
 	return prisma.quiz.findMany({
 		where: {
 			lessonId,
+			lesson: { module: { course: { userId } } },
 		},
 		select: {
 			id: true,
@@ -112,6 +134,7 @@ export const submitQuiz = async (
 	const quizzes = await prisma.quiz.findMany({
 		where: {
 			lessonId,
+			lesson: { module: { course: { userId } } },
 		},
 	});
 

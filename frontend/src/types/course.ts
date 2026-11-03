@@ -22,6 +22,10 @@ export interface Lesson {
   duration: number;
 
   order: number;
+
+  module?: {
+    title: string;
+  };
 }
 
 export interface Module {

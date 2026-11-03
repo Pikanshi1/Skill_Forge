@@ -6,6 +6,9 @@ const router = Router();
 
 router.use(authMiddleware);
 
+// Get all lessons of a module
+router.get("/module/:moduleId", lessonController.getModuleLessons);
+
 // Get lesson by id
 router.get("/:lessonId", lessonController.getLessonById);
 
@@ -20,8 +23,5 @@ router.get("/:lessonId/summary", lessonController.getLessonSummary);
 
 // Mark lesson completed
 router.patch("/:lessonId/complete", lessonController.markLessonCompleted);
-
-// Get all lessons of a module
-router.get("/module/:moduleId", lessonController.getModuleLessons);
 
 export default router;

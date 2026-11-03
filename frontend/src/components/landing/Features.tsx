@@ -7,7 +7,7 @@ const features = [
   {
     icon: "🤖",
     title: "Personal AI Tutor",
-    description: "Learn faster with an intelligent AI assistant that explains concepts and answers your questions."
+    description: "Learn faster with an intelligent AI Tutor that explains concepts, answers questions and helps debug code."
   },
   {
     icon: "📝",

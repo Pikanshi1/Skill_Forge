@@ -34,6 +34,7 @@ export default function TutorPanel({
   const [width, setWidth] = useState(420);
 
   const [loading, setLoading] = useState(false);
+  const [chatId, setChatId] = useState<string>();
 
   const [course, setCourse] = useState<Course | null>(null);
 
@@ -121,9 +122,9 @@ export default function TutorPanel({
         lessonId,
 
         message: text,
-
-        previousMessages: messages,
+        chatId,
       } );
+      setChatId(response.chatId);
 
       setMessages((prev) => [
         ...prev,

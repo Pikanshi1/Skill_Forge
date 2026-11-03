@@ -49,7 +49,7 @@ Thumbs.db
 .claude/
 .agents/
 
-# AI / Assistant files
+# Agent instruction files
 AGENTS.md
 CLAUDE.md
 

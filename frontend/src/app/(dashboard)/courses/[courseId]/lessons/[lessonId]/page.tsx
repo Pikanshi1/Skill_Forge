@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useLessonStore } from "@/store/lessonStore";
 import useCourse from "@/hooks/useCourse";
+import lessonService from "@/services/lessonService";
+import { useState } from "react";
 
 export default function LessonPage() {
   const params = useParams();
@@ -23,6 +25,7 @@ export default function LessonPage() {
   const markComplete = useLessonStore((state) => state.markComplete);
   const course = useCourse((state) => state.selectedCourse);
   const getCourse = useCourse((state) => state.getCourse);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     if (!courseId || !lessonId) return;
@@ -54,6 +57,16 @@ export default function LessonPage() {
     );
   }
 
+  const generateContent = async () => {
+    setGenerating(true);
+    try {
+      await lessonService.generateLesson(lesson.id);
+      await getLesson(lesson.id);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   let content = lesson.content ?? lesson.description;
   let summary = lesson.description;
   try {
@@ -76,6 +89,8 @@ export default function LessonPage() {
       modules={course?.modules}
       completed={completed}
       onComplete={() => void markComplete(lesson.id)}
+      onGenerate={!lesson.content?.trim() ? () => void generateContent() : undefined}
+      generating={generating}
     />
   );
 }

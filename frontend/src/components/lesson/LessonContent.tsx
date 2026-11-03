@@ -1,5 +1,9 @@
 import LessonNavigation from "./LessonNavigation";
 import LessonProgress from "./LessonProgress";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 
 type LessonContentProps = {
   content: string;
@@ -7,6 +11,8 @@ type LessonContentProps = {
   videoUrl?: string;
   completed?: boolean;
   onComplete?: () => void;
+  onGenerate?: () => void;
+  generating?: boolean;
 };
 
 export default function LessonContent({
@@ -15,6 +21,8 @@ export default function LessonContent({
   videoUrl,
   completed = false,
   onComplete,
+  onGenerate,
+  generating = false,
 }: LessonContentProps) {
   return (
     <div className="flex-1 overflow-y-auto">
@@ -33,9 +41,25 @@ export default function LessonContent({
           </div>
         )}
 
-        <div className="text-gray-700 leading-8 whitespace-pre-wrap">
-          {content}
+        <div className="prose prose-slate max-w-none text-gray-700">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+          >
+            {content}
+          </ReactMarkdown>
         </div>
+
+        {onGenerate && (
+          <button
+            type="button"
+            onClick={onGenerate}
+            disabled={generating}
+            className="mt-6 rounded-xl bg-purple-600 px-5 py-3 font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
+          >
+            {generating ? "Generating lesson..." : "Generate lesson content"}
+          </button>
+        )}
 
         {summary && (
           <div className="mt-10 rounded-xl border p-6">

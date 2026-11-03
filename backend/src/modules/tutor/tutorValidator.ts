@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const chatSchema = z.object({
-	courseId: z.string().cuid(),
+	chatId: z.string().cuid().optional(),
+	courseId: z.string().cuid().optional(),
 
 	lessonId: z.string().cuid().optional(),
 
@@ -9,3 +10,9 @@ export const chatSchema = z.object({
 });
 
 export type ChatInput = z.infer<typeof chatSchema>;
+
+export const createChatSchema = z.object({
+	title: z.string().trim().min(1).max(120).optional(),
+});
+
+export type CreateChatInput = z.infer<typeof createChatSchema>;

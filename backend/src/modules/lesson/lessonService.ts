@@ -68,6 +68,10 @@ export const generateLesson = async (lessonId: string, userId: string) => {
 	});
 
 	const generatedContent = response.choices[0]?.message?.content?.trim() ?? "";
+	if (generatedContent.length < 500) {
+		throw new AppError("AI returned incomplete lesson content", 502);
+	}
+
 	await prisma.lesson.update({
 		where: {
 			id: lesson.id,
@@ -94,20 +98,12 @@ export const generateLesson = async (lessonId: string, userId: string) => {
 export const regenerateLesson = async (lessonId: string, userId: string) => {
 	const lesson = await prisma.lesson.findFirst({
 		where: { id: lessonId, module: { course: { userId } } },
-		select: { id: true },
+		select: { id: true, content: true, summary: true },
 	});
 
 	if (!lesson) {
 		throw new AppError("Lesson not found", 404);
 	}
-
-	await prisma.lesson.update({
-		where: { id: lesson.id },
-		data: {
-			content: null,
-			summary: null,
-		},
-	});
 
 	return generateLesson(lessonId, userId);
 };
@@ -128,6 +124,7 @@ export const markLessonCompleted = async (lessonId: string, userId: string) => {
 	const lesson = await prisma.lesson.findUnique({
 		where: {
 			id: lessonId,
+			module: { course: { userId } },
 		},
 	});
 

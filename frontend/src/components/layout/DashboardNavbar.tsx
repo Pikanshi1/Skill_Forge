@@ -3,6 +3,7 @@
 import { Bell } from "lucide-react";
 import ProfileDropdown from "./ProfileDropdown";
 import MobileSidebar from "./MobileSidebar";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 export default function DashboardNavbar() {
   return (
@@ -37,6 +38,7 @@ export default function DashboardNavbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <button className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 transition hover:bg-gray-200">
             <Bell size={18} />
             <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500"></span>

@@ -47,11 +47,11 @@ export default function About() {
                 </div>
 
                 <h4 className="mt-5 text-xl font-bold">
-                  AI Learning Assistant
+                  AI Tutor
                 </h4>
 
                 <p className="mt-2 px-6 text-center text-sm leading-7 text-gray-500">
-                  Your intelligent companion for creating, learning and growing.
+                  Your intelligent companion for understanding, practicing and growing.
                 </p>
 
               </div>

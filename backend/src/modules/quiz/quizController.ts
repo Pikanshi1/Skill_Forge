@@ -8,14 +8,20 @@ const lessonId = (value: string | string[]) =>
 
 export const generateQuiz = asyncHandler(
 	async (req: Request, res: Response) => {
-		const quiz = await quizService.generateQuiz(lessonId(req.params.lessonId));
+		const quiz = await quizService.generateQuiz(
+			lessonId(req.params.lessonId),
+			(req.user as { id: string }).id,
+		);
 
 		res.status(201).json(new ApiResponse("Quiz generated successfully", quiz));
 	},
 );
 
 export const getQuiz = asyncHandler(async (req: Request, res: Response) => {
-	const quiz = await quizService.getQuiz(lessonId(req.params.lessonId));
+	const quiz = await quizService.getQuiz(
+		lessonId(req.params.lessonId),
+		(req.user as { id: string }).id,
+	);
 
 	res.status(200).json(new ApiResponse("Quiz fetched successfully", quiz));
 });

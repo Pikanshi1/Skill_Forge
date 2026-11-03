@@ -1,89 +1,105 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Send, BookOpen, Menu, X, Bot, User } from "lucide-react";
-import TutorService from "@/services/tutorService";
+import { Send, BookOpen, Menu, X, Bot, User, Plus } from "lucide-react";
+import TutorService, { TutorChat } from "@/services/tutorService";
 import CourseService from "@/services/courseService";
 import { Course } from "@/types/course";
 
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 export default function TutorPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [chats, setChats] = useState<TutorChat[]>([]);
+  const [activeChat, setActiveChat] = useState<TutorChat | null>(null);
   const [message, setMessage] = useState("");
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadCourse = async () => {
+    const loadTutor = async () => {
       try {
-        const response = await CourseService.getCourses();
+        const [coursesResponse, existingChats] = await Promise.all([
+          CourseService.getCourses(),
+          TutorService.getChats(),
+        ]);
+        setCourse(coursesResponse.data?.[0] ?? null);
+        setChats(existingChats);
 
-        if (response.data?.length > 0) {
-          setCourse(response.data[0]);
+        if (existingChats.length > 0) {
+          setActiveChat(await TutorService.getChat(existingChats[0].id));
+        } else {
+          const newChat = await TutorService.createChat();
+          setChats([newChat]);
+          setActiveChat(newChat);
         }
-      } catch (error) {
-        console.error("Failed to load course", error);
+      } catch {
+        setError("AI Tutor could not be loaded. Please refresh and try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    loadCourse();
+    void loadTutor();
   }, []);
 
-  const [messages, setMessages] = useState([
+  const messages: Message[] = activeChat?.messages.map((item) => ({
+    role: item.role === "USER" ? "user" : "assistant",
+    content: item.message,
+  })) ?? [
     {
       role: "assistant",
-      content: "Hello! I am your AI Tutor. Ask me anything about your course.",
+      content: "Hello! I am your AI Tutor. Ask me anything about your course, programming, DSA, DBMS, SQL, OS, CN, AI/ML or mathematics.",
     },
-  ]);
+  ];
+
+  const selectChat = async (chat: TutorChat) => {
+    try {
+      setActiveChat(await TutorService.getChat(chat.id));
+    } catch {
+      setError("That chat could not be loaded.");
+    }
+  };
+
+  const createNewChat = async () => {
+    try {
+      const newChat = await TutorService.createChat();
+      setChats((previous) => [newChat, ...previous]);
+      setActiveChat(newChat);
+      setError(null);
+    } catch {
+      setError("A new chat could not be created.");
+    }
+  };
 
   const sendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || !activeChat || sending) return;
 
     const currentMessage = message;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "user",
-        content: currentMessage,
-      },
-    ]);
-
     setMessage("");
-
+    setSending(true);
     try {
-      if (!course) {
-        setMessages((prev) => [...prev, { role: "assistant", content: "Create a course first, then I can tutor you with its lesson context." }]);
-        return;
-      }
-
-      setSending(true);
-      const lesson = course.modules?.[0]?.lessons?.[0];
-
+      const lesson = course?.modules?.[0]?.lessons?.[0];
       const response = await TutorService.chat({
-        courseId: course.id,
+        chatId: activeChat.id,
+        courseId: course?.id,
         lessonId: lesson?.id,
         message: currentMessage,
       });
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: response.answer || "I could not generate an answer. Please try again.",
-        },
-      ]);
+      const updatedChat = await TutorService.getChat(response.chatId);
+      setActiveChat(updatedChat);
+      setChats((previous) =>
+        previous.map((chat) =>
+          chat.id === response.chatId ? updatedChat : chat,
+        ),
+      );
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Something went wrong. Please try again.",
-        },
-      ]);
+      setError("Something went wrong while contacting the AI Tutor. Please try again.");
     } finally {
       setSending(false);
     }
@@ -93,7 +109,7 @@ export default function TutorPage() {
     <div className="flex h-[calc(100vh-80px)] bg-gray-50">
       {/* Current Learning Sidebar */}
 
-      <div
+      <aside
         className={`bg-white border-r transition-all duration-300 overflow-hidden ${
           sidebarOpen ? "w-72" : "w-0"
         }`}
@@ -127,9 +143,37 @@ export default function TutorPage() {
 
               <p className="text-xs text-gray-500 mt-2">Progress is tracked from each lesson.</p>
             </div>
+
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-sm text-gray-500">Chat history</p>
+                <button
+                  type="button"
+                  onClick={() => void createNewChat()}
+                  className="rounded-lg p-1 text-blue-600 hover:bg-blue-50"
+                  title="New Chat"
+                >
+                  <Plus size={18} />
+                </button>
+              </div>
+              <div className="space-y-1">
+                {chats.map((chat) => (
+                  <button
+                    type="button"
+                    key={chat.id}
+                    onClick={() => void selectChat(chat)}
+                    className={`w-full truncate rounded-lg px-3 py-2 text-left text-sm ${
+                      chat.id === activeChat?.id ? "bg-blue-100 text-blue-800" : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {chat.title ?? "AI Tutor Chat"}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </aside>
 
       {/* Chat Section */}
 
@@ -153,11 +197,22 @@ export default function TutorPage() {
               <h1 className="font-semibold">AI Tutor</h1>
 
               <p className="text-xs text-gray-500">
-                Your personal learning assistant
+                Your personal AI Tutor
               </p>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => void createNewChat()}
+            className="ml-auto flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-sm text-blue-700 hover:bg-blue-100"
+          >
+            <Plus size={16} />
+            New Chat
+          </button>
         </div>
+
+        {error && <p className="border-b bg-amber-50 px-6 py-2 text-sm text-amber-800">{error}</p>}
 
         {/* Messages */}
 
@@ -214,7 +269,7 @@ export default function TutorPage() {
               className="bg-blue-600 text-white px-5 rounded-xl flex items-center gap-2 disabled:opacity-50"
             >
               <Send size={18} />
-              Send
+              {sending ? "Thinking..." : "Send"}
             </button>
           </div>
         </div>

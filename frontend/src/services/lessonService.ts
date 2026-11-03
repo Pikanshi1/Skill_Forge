@@ -20,6 +20,14 @@ class LessonService {
     return response.data;
   }
 
+  async regenerateLesson(id: string) {
+    const response = await api.post<ApiResponse<Lesson>>(
+      `/lesson/${id}/regenerate`,
+    );
+
+    return response.data;
+  }
+
   async markComplete(id: string) {
     const response = await api.patch(
       `/lesson/${id}/complete`

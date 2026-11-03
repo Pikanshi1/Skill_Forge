@@ -5,22 +5,67 @@ import env from "../../config/env.js";
 import prisma from "../../lib/prisma.js";
 import AppError from "../../utils/AppError.js";
 
+export const getTutorChats = async (userId: string) => {
+	return prisma.tutorChat.findMany({
+		where: { userId },
+		orderBy: { createdAt: "desc" },
+		include: {
+			messages: {
+				orderBy: { createdAt: "asc" },
+				take: 1,
+				select: { role: true, message: true },
+			},
+		},
+	});
+};
+
+export const createTutorChat = async (
+	userId: string,
+	title?: string,
+) => {
+	return prisma.tutorChat.create({
+		data: {
+			userId,
+			title: title ?? "New AI Tutor Chat",
+		},
+		include: { messages: true },
+	});
+};
+
+export const getTutorChat = async (userId: string, chatId: string) => {
+	const chat = await prisma.tutorChat.findFirst({
+		where: { id: chatId, userId },
+		include: {
+			messages: {
+				orderBy: { createdAt: "asc" },
+				select: { role: true, message: true },
+			},
+		},
+	});
+
+	if (!chat) {
+		throw new AppError("Tutor chat not found", 404);
+	}
+
+	return chat;
+};
+
 export const chatWithTutor = async (
 	userId: string,
 	data: {
-		courseId: string;
+		chatId?: string;
+		courseId?: string;
 		lessonId?: string;
 		message: string;
 	},
 ) => {
-	const course = await prisma.course.findFirst({
-		where: {
-			id: data.courseId,
-			userId,
-		},
-	});
+	const course = data.courseId
+		? await prisma.course.findFirst({
+				where: { id: data.courseId, userId },
+			})
+		: null;
 
-	if (!course) {
+	if (data.courseId && !course) {
 		throw new AppError("Course not found", 404);
 	}
 
@@ -32,7 +77,7 @@ export const chatWithTutor = async (
 				id: data.lessonId,
 				module: {
 					course: {
-						id: data.courseId,
+						id: data.courseId ?? "",
 						userId,
 					},
 				},
@@ -44,16 +89,18 @@ export const chatWithTutor = async (
 		}
 	}
 
-	const chatTitle = `${course.title} - ${lesson?.title ?? "General guidance"}`;
-	let chat = await prisma.tutorChat.findFirst({
-		where: {
-			userId,
-			title: chatTitle,
-		},
-		orderBy: {
-			createdAt: "desc",
-		},
-	});
+	const chatTitle = course
+		? `${course.title} - ${lesson?.title ?? "General guidance"}`
+		: "General AI Tutor Chat";
+	let chat = data.chatId
+		? await prisma.tutorChat.findFirst({
+				where: { id: data.chatId, userId },
+			})
+		: null;
+
+	if (data.chatId && !chat) {
+		throw new AppError("Tutor chat not found", 404);
+	}
 
 	if (!chat) {
 		chat = await prisma.tutorChat.create({
@@ -82,7 +129,7 @@ export const chatWithTutor = async (
 	});
 
 	const prompt = buildTutorPrompt(
-		course.title,
+		course?.title ?? "General learning",
 
 		lesson?.title ?? "",
 

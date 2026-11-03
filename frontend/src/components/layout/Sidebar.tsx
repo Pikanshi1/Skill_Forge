@@ -8,7 +8,6 @@ import {
   PlusCircle,
   FileText,
   Bot,
-  ClipboardCheck,
   BarChart3,
   Award,
   User,
@@ -66,11 +65,6 @@ const sections: NavSection[] = [
         title: "AI Tutor",
         href: "/ai-tutor",
         icon: Bot,
-      },
-      {
-        title: "AI Quiz",
-        href: "/quiz",
-        icon: ClipboardCheck,
       },
     ],
   },
@@ -178,22 +172,6 @@ export default function Sidebar() {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="border-t border-gray-100 p-4">
-        <div className="rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 p-4 text-white">
-          <h3 className="text-base font-semibold">
-            AI Assistant
-          </h3>
-
-          <p className="mt-1 text-xs text-purple-100 leading-relaxed">
-            Need help creating your next course? Let AI guide you.
-          </p>
-
-          <button className="mt-4 w-full rounded-lg bg-white py-2.5 text-sm font-semibold text-purple-700 hover:bg-gray-100 transition">
-            Get Started
-          </button>
-        </div>
       </div>
     </aside>
   );
