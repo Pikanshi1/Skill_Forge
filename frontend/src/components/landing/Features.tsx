@@ -2,31 +2,37 @@ const features = [
   {
     icon: "✨",
     title: "AI Course Creation",
+    tone: "violet",
     description: "Generate complete courses with structured modules, lessons and learning paths instantly using AI."
   },
   {
     icon: "🤖",
     title: "Personal AI Tutor",
+    tone: "blue",
     description: "Learn faster with an intelligent AI Tutor that explains concepts, answers questions and helps debug code."
   },
   {
     icon: "📝",
     title: "AI Quiz Generator",
+    tone: "amber",
     description: "Create smart assessments and practice quizzes personalized for your learning journey."
   },
   {
     icon: "📊",
     title: "Learning Analytics",
+    tone: "emerald",
     description: "Track your progress, identify improvements and understand your learning performance."
   },
   {
-    icon: "🎓",
-    title: "Certificates",
-    description: "Complete courses and earn certificates that showcase your skills and achievements."
+    icon: "🧩",
+    title: "Lesson Practice",
+    tone: "rose",
+    description: "Strengthen your understanding with focused lesson practice and useful examples."
   },
   {
     icon: "🚀",
     title: "Personalized Learning",
+    tone: "cyan",
     description: "Follow AI-powered learning paths designed around your goals and interests."
   }
 ];
@@ -55,17 +61,17 @@ export default function Features() {
         {features.map((feature) => (
           <div
             key={feature.title}
-            className="rounded-2xl bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm transition duration-300 hover:shadow-xl"
+            className={`feature-card feature-card-${feature.tone} animate-fade-up rounded-2xl bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm ring-1 ring-slate-200/80 transition duration-500 hover:-translate-y-1 hover:shadow-xl`}
           >
-            <div className="mb-4 text-3xl">
+            <div className="feature-card-icon mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-3xl shadow-sm ring-1 ring-slate-200/80">
               {feature.icon}
             </div>
 
-            <h3 className="text-lg font-semibold">
+            <h3 className="feature-card-title text-lg font-semibold">
               {feature.title}
             </h3>
 
-            <p className="mt-3 text-sm leading-7 text-gray-500">
+            <p className="feature-card-description mt-3 text-sm leading-7 text-gray-500">
               {feature.description}
             </p>
           </div>

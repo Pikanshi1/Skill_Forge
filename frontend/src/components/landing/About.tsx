@@ -1,119 +1,51 @@
 export default function About() {
   return (
-    <section id="about" className="px-6 md:px-12 py-20">
-      <div className="max-w-5xl mx-auto">
-
-        <div className="text-center">
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
-            Transforming the Future of{" "}
-            <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
-              Learning with AI
-            </span>
-          </h2>
-
-          <p className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-gray-600 leading-8">
-            AI Course Builder is a modern learning platform that uses artificial
-            intelligence to help students, educators and professionals create
-            structured courses, interactive lessons and personalized learning
-            experiences—all from a single intelligent workspace.
-          </p>
-        </div>
-
-        <div className="mt-16 rounded-2xl bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 p-8 shadow-sm">
-
-          <div className="grid items-center gap-10 md:grid-cols-2">
-
-            <div>
-
-              <h3 className="text-3xl font-bold leading-tight">
-                Everything you need to create,
-                learn and grow smarter.
-              </h3>
-
-              <p className="mt-5 text-base text-gray-600 leading-8">
-                Generate complete courses, learn with an intelligent AI tutor,
-                create quizzes automatically and monitor your progress with
-                powerful analytics designed for modern learners.
-              </p>
-
+    <section id="about" className="about-section px-6 py-24 md:px-12">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <p className="about-kicker text-sm font-bold uppercase tracking-[0.2em]">
+              A better way to learn
+            </p>
+            <h2 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
+              Turn curiosity into{" "}
+              <span className="about-gradient-text">real progress.</span>
+            </h2>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
+              Skill Forge brings course creation, focused lessons, practice,
+              progress tracking and AI guidance into one calm workspace built
+              for consistent learning.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {["Learn at your pace", "Practice with purpose", "Keep your momentum"].map((item) => (
+                <span key={item} className="about-pill rounded-full px-4 py-2 text-sm font-medium">
+                  {item}
+                </span>
+              ))}
             </div>
+          </div>
 
-            <div className="flex justify-center">
-
-              <div className="flex h-60 w-full max-w-sm flex-col items-center justify-center rounded-2xl bg-white shadow-lg">
-
-                <div className="text-6xl">
-                  🤖
-                </div>
-
-                <h4 className="mt-5 text-xl font-bold">
-                  AI Tutor
-                </h4>
-
-                <p className="mt-2 px-6 text-center text-sm leading-7 text-gray-500">
-                  Your intelligent companion for understanding, practicing and growing.
-                </p>
-
+          <div className="about-panel rounded-3xl p-6 shadow-xl transition duration-500 hover:-translate-y-1 md:p-8">
+            <div className="flex items-center justify-between">
+              <span className="about-panel-label text-sm font-semibold">Your learning workspace</span>
+              <span className="about-status rounded-full px-3 py-1 text-xs font-bold">In focus</span>
+            </div>
+            <div className="mt-8 space-y-4">
+              <div className="about-row rounded-2xl p-4">
+                <span className="text-2xl">🧭</span>
+                <span><strong className="block">Structured courses</strong><small>Clear paths from first concept to confident practice.</small></span>
               </div>
-
+              <div className="about-row rounded-2xl p-4">
+                <span className="text-2xl">💬</span>
+                <span><strong className="block">One helpful Tutor</strong><small>Ask questions, debug ideas and keep the context.</small></span>
+              </div>
+              <div className="about-row rounded-2xl p-4">
+                <span className="text-2xl">📈</span>
+                <span><strong className="block">Visible progress</strong><small>See what you have completed and what comes next.</small></span>
+              </div>
             </div>
-
           </div>
-
         </div>
-
-        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-
-          <div className="text-center">
-
-            <h3 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-5xl font-extrabold text-transparent">
-              10K+
-            </h3>
-
-            <p className="mt-2 text-lg font-semibold">
-              Courses Built
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              AI-generated learning experiences.
-            </p>
-
-          </div>
-
-          <div className="text-center">
-
-            <h3 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-5xl font-extrabold text-transparent">
-              24/7
-            </h3>
-
-            <p className="mt-2 text-lg font-semibold">
-              AI Tutor
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              Instant guidance whenever you need it.
-            </p>
-
-          </div>
-
-          <div className="text-center">
-
-            <h3 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-5xl font-extrabold text-transparent">
-              Smart
-            </h3>
-
-            <p className="mt-2 text-lg font-semibold">
-              Analytics
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              Track progress and improve continuously.
-            </p>
-
-          </div>
-
-        </div>
-
       </div>
     </section>
   );
